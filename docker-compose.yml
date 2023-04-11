@@ -1,0 +1,9 @@
+version: '3.3'
+services:
+  bot:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "7772:7772"
+    env_file:
+      - ./.env
