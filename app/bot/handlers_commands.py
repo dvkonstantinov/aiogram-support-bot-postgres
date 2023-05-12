@@ -3,8 +3,9 @@ from aiogram.filters import Command, CommandObject
 from aiogram.exceptions import TelegramAPIError
 from aiogram.types import Message
 
-from app.bot.get_reports import get_month_report
-from app.bot.utils import get_user_name, extract_user_id
+from app.bot.get_reports import get_report_from_db
+from app.bot.utils import get_user_name, extract_user_id, \
+    check_input_date_correct, stringdate_to_date
 from app.core.config import settings
 from app.core.db import get_async_session
 from app.crud.user import crud_user
@@ -14,8 +15,7 @@ router = Router()
 
 
 @router.message(Command(commands=["start"]))
-async def command_start(message: Message) -> None:
-    print(message.from_user)
+async def command_start(message: Message):
     user_data = {
         'telegram_id': message.from_user.id,
         'telegram_username': message.from_user.username,
@@ -32,7 +32,7 @@ async def command_start(message: Message) -> None:
     if existing_user and existing_user.is_banned:
         return
     await message.answer(
-        "Привет! Мы - команда поддержки. Если у вас есть вопрос, "
+        "Привет! Мы - команда поддержки ILAASPECT. Если у вас есть вопрос, "
         "напишите нам, мы с радостью на него ответим.\n"
         "Мы работаем по будням с 9:00 до 18:00, но можем ответить и в другое "
         "время, если не будем заняты:)",
@@ -68,17 +68,25 @@ async def get_user_info(message: Message, bot: Bot):
 async def get_report(message: Message,
                      bot: Bot,
                      command: CommandObject):
-    args = command.args
-    print(args)
     session_generator = get_async_session()
     session = await session_generator.__anext__()
-    report = await get_month_report(
-        session)
+    if command.args:
+        if not check_input_date_correct(command.args):
+            answer_text = 'Неверный формат даты'
+            await bot.send_message(
+                chat_id=int(settings.GROUP_ID), text=answer_text
+            )
+            return
+        from_date, to_date = stringdate_to_date(command.args)
+        report = await get_report_from_db(session, from_date, to_date)
+        report['period'] = 'выбранный период'
+    else:
+        report = await get_report_from_db(session)
+        report['period'] = 'последний месяц'
 
-    answer_text = (f"Отчет за месяц, c {report['from_date']} до "
+    answer_text = (f"Отчет за {report['period']}, c {report['from_date']} до "
                    f"{report['to_date']}.\n"
                    f"Всего было получено {report['questions_amount']} "
                    f"сообщений от {report['users_amount']} клиентов.\n"
                    f"Количество ответов от администраторов: {report['answers_amount']}")
     await bot.send_message(chat_id=int(settings.GROUP_ID), text=answer_text)
-

@@ -5,9 +5,23 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.crud.message import crud_message
 
 
-async def get_month_report(session: AsyncSession):
-    to_date = datetime.now()
-    from_date = to_date + relativedelta(months=-1)
+async def get_report_from_db(session: AsyncSession,
+                             from_date=None,
+                             to_date=None):
+    """Получение отчета за интервал времени из базы данных.
+    :param session: Асинхронная сессия к БД
+    :type session: AsyncSession
+    :param from_date: Дата начала
+    :type from_date: str
+    :param to_date: Дата окончания
+    :type to_date: str
+    :return: Возвращает словарь с данными для отчета
+    :rtype: dict
+    """
+    if not to_date:
+        to_date = datetime.now()
+    if not from_date:
+        from_date = to_date + relativedelta(months=-1)
     messages = await crud_message.get_by_date_interval(
         from_date, to_date, session
     )

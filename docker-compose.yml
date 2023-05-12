@@ -7,3 +7,13 @@ services:
       - "7772:7772"
     env_file:
       - ./.env
+  postgres:
+    container_name: postgres-support-bot
+    image: postgres:14.0-alpine
+    restart: always
+    ports:
+    - "5432:5432"
+    volumes:
+      - ./db:/var/lib/postgresql/data/
+    env_file:
+      - ./env

@@ -21,7 +21,6 @@ async def send_message_to_group(message: Message, bot: Bot):
         'telegram_user_id': message.from_user.id,
         'attachments': False,
     }
-    print(message_data)
     session_generator = get_async_session()
     session = await session_generator.__anext__()
     await crud_message.create(message_data, session)
@@ -38,7 +37,6 @@ async def send_message_to_group(message: Message, bot: Bot):
 @router.message(F.chat.id == int(settings.GROUP_ID),
                 F.reply_to_message)
 async def send_message_answer(message: Message):
-    chat_id = ''
     if not message.reply_to_message.from_user.is_bot:
         return
     try:
@@ -55,7 +53,6 @@ async def send_message_answer(message: Message):
         'telegram_user_id': message.from_user.id,
         'answer_to_user_id': chat_id,
     }
-    print(message_data)
     session_generator = get_async_session()
     session = await session_generator.__anext__()
     await crud_message.create(message_data, session)
@@ -73,7 +70,6 @@ async def supported_media(message: Message):
     }
     if message.caption:
         message_data['text'] = message.caption
-    print(message_data)
     session_generator = get_async_session()
     session = await session_generator.__anext__()
     await crud_message.create(message_data, session)
