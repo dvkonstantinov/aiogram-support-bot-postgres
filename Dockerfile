@@ -1,9 +1,12 @@
 FROM python:3.10-slim
-WORKDIR /app
+WORKDIR /code
 
-COPY ./bot /app
-COPY ./requirements.txt /app
+COPY . /code
 
 RUN pip install -r requirements.txt --no-cache-dir
 
-CMD ["python3", "main.py"]
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONPATH /code
+
+CMD ["python3", "./app/bot/main.py"]

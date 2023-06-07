@@ -34,10 +34,3 @@ async def get_async_session():
     """Генератор асинхронной сессии"""
     async with AsyncSessionLocal() as async_session_gen:
         yield async_session_gen
-
-# async def get_async_session():
-#     print(11111111111111)
-#     session_generator = get_async_session_generator()
-#     print(222222222222)
-#     session = await session_generator.asend(None)
-#     return session

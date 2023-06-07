@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 
 from pydantic import BaseSettings
@@ -17,8 +18,8 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     DB_HOST: str
     DB_PORT: str
-    DB_USER: str
-    DB_PASSWORD: str
+    DB_USER: str = os.getenv('POSTGRES_USER')
+    DB_PASSWORD: str = os.getenv('POSTGRES_PASSWORD')
 
     class Config:
         env_file = ".env"

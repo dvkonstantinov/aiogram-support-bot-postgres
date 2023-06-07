@@ -17,7 +17,7 @@ class UserCreateScheme(UserBaseScheme):
     pass
 
 
-class UserFormDBScheme(BaseModel):
+class UserFromDBScheme(UserBaseScheme):
     id: int
     is_banned: bool
     created_at: datetime

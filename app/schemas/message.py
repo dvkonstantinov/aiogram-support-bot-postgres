@@ -15,9 +15,8 @@ class MessageCreateScheme(MessageBaseScheme):
     pass
 
 
-class UserFormDBScheme(MessageBaseScheme):
+class MessageFromDBScheme(MessageBaseScheme):
     id: int
-    is_banned: bool
     created_at: datetime
     updated_at: datetime
 

@@ -1,19 +1,18 @@
 version: '3.3'
 services:
   bot:
+    container_name: support-bot
     build: .
-    restart: unless-stopped
+    restart: always
     ports:
       - "7772:7772"
     env_file:
       - ./.env
   postgres:
-    container_name: postgres-support-bot
+    container_name: support-bot-db
     image: postgres:14.0-alpine
     restart: always
-    ports:
-    - "5432:5432"
     volumes:
       - ./db:/var/lib/postgresql/data/
     env_file:
-      - ./env
+      - ./.env
