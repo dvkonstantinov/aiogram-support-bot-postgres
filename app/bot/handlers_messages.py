@@ -1,4 +1,5 @@
 from aiogram import Bot, F, Router
+from aiogram.exceptions import TelegramForbiddenError
 from aiogram.types import Message
 
 from app.bot.utils import extract_user_id, check_user_is_banned
@@ -76,14 +77,25 @@ async def send_message_answer(message: Message,
         return await message.reply(text=f'Не могу извлечь Id.  Возможно он '
                                         f'некорректный. Текст ошибки:\n'
                                         f'{str(err)}')
-    await message.copy_to(chat_id)
+    try:
+        await message.copy_to(chat_id)
+    except TelegramForbiddenError:
+        await message.reply(text='Сообщение не доставлено. Бот был '
+                                 'заблокировн пользователем, '
+                                 'либо пользователь удален')
     session_generator = get_async_session()
     session = await session_generator.__anext__()
     db_user = await crud_user.get_or_create_user_by_tg_message(message, session)
     await crud_user.register_admin(db_user, session)
     message_data = {
-        'text': message.text,
         'telegram_user_id': message.from_user.id,
         'answer_to_user_id': chat_id,
     }
+    if message.text:
+        message_data['text'] = message.text
+    else:
+        if message.caption:
+            message_data['text'] = message.caption
+            message_data['attachments'] = True
+
     await crud_message.create(message_data, session)
