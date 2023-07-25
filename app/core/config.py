@@ -10,7 +10,6 @@ load_dotenv()
 class Settings(BaseSettings):
     TELEGRAM_TOKEN: str
     GROUP_ID: str
-    GROUP_TYPE: str = 'group'
     WEBHOOK_DOMAIN: Optional[str]
     WEBHOOK_PATH: Optional[str]
     APP_HOST: str
