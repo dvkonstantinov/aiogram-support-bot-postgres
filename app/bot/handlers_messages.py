@@ -48,7 +48,7 @@ async def supported_media(message: Message):
     await message.copy_to(
         chat_id=settings.GROUP_ID,
         caption=((message.caption or "") +
-                 f"\n\n#id{message.from_user.id}"),
+                 f"\n\n Тикет: #id{message.from_user.id}"),
         parse_mode="HTML"
     )
     session_generator = get_async_session()
