@@ -17,12 +17,7 @@ router = Router()
 
 @router.message(Command(commands=["start"]))
 async def command_start(message: Message):
-    await message.answer(
-        "Привет! Мы - команда поддержки ILAASPECT. Если у вас есть вопрос, "
-        "напишите нам, мы с радостью на него ответим.\n"
-        "Мы работаем по будням с 9:00 до 18:00, но можем ответить и в другое "
-        "время, если не будем заняты:)",
-    )
+    await message.answer(settings.START_MESSAGE)
     session_generator = get_async_session()
     session = await session_generator.__anext__()
     db_user = await crud_user.get_or_create_user_by_tg_message(message,

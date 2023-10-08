@@ -119,6 +119,7 @@ DB_HOST=<имя_контейнера_с_БД>
 DB_PORT=5432
 POSTGRES_USER=<postgres_user>
 POSTGRES_PASSWORD=<postgres_password>
+START_MESSAGE=<Приветственное сообщение бота, когда клиент нажимает кнопку start>
 ```
 В качестве теста логин пользователя БД, пароль и название БД можно указать postgres. Только для теста, не для продакшена!
 4. Запустить сборку docker-образа и его запуск из файла docker-compose.

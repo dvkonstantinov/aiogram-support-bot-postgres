@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     DB_PORT: str
     DB_USER: str = os.getenv('POSTGRES_USER')
     DB_PASSWORD: str = os.getenv('POSTGRES_PASSWORD')
+    START_MESSAGE: str = os.getenv('START_MESSAGE')
 
     class Config:
         env_file = ".env"
